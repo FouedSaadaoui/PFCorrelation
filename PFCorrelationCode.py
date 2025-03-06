@@ -2,6 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import sys
+import numpy as np
 
 # Try Google Colab import, if it fails, assume a local environment
 try:
@@ -47,18 +48,20 @@ df = df.fillna(0)  # Replace NaN with 0
 # df = df.fillna(df.mean())  # Uncomment to replace NaN with column mean
 # df = df.dropna()  # Uncomment to remove rows with NaN
 
+# Convert prices to returns (if the data contains prices)
+# Calculate percentage returns and drop NaN values
+df = df.pct_change().dropna()  
+# Alternatively, use log returns:
+# df = np.log(df / df.shift(1)).dropna() 
+
 # Compute correlation matrix
 corr_matrix = df.corr()
 
-# Save correlation matrix
-output_file = "correlation_matrix.csv"
-corr_matrix.to_csv(output_file)
-print(f"Correlation matrix saved as '{output_file}'.")
-print("Correlation Matrix:")
-print(corr_matrix)
-
-# Plot heatmap
+# Plot heatmap 
 plt.figure(figsize=(12, 8))
-sns.heatmap(corr_matrix, annot=False, cmap='spring', linewidths=0.5)
+sns.heatmap(corr_matrix, annot=False, cmap='spring', linewidths=0.5)  # Set annot=False
 plt.title('Correlation Matrix Heatmap')
 plt.show()
+
+# Display correlation matrix as a table
+display(corr_matrix)  # Display the DataFrame
